@@ -1,0 +1,88 @@
+<odoo>
+    <record id="task_report" model="ir.actions.report">
+        <field name="name">task report</field>
+        <field name="model">todo.task</field>
+        <field name="report_type">qweb-html</field>
+        <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="binding_type">report</field>
+        <field name="report_name">todo_app.todo_task_report</field>
+    </record>
+    <template id="todo_task_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <style>
+                        h1{text-align:center;}
+                        #first_table{
+                        width:50%;
+                        text-align:left}
+                        #second_table{
+                        text-align:center;}
+
+                    </style>
+
+
+                     <h1> TODO TASK REPORT</h1>
+
+                     <div >
+                         <table class="table table-borderless" id="first_table">
+                             <tr>
+                                 <th>Task:</th>
+                                 <td><t t-esc="o.name"/></td>
+                             </tr>
+                             <tr>
+                                 <th>Due Date:</th>
+                                 <td><t t-esc="o.due_date"/></td>
+                             </tr>
+                             <tr>
+                                 <th>Assign To:</th>
+                                 <td><t t-esc="o.assign_id.name"/></td>
+                             </tr>
+                             <tr>
+                                 <th>Estimated Time:</th>
+                                 <td><t t-esc="o.estimated_time"/></td>
+                             </tr>
+                         </table>
+
+                        <div><strong>Description:</strong> </div>
+                         <div><t t-esc="o.description"/></div>
+                     </div>
+
+                     <table class="table table-bordered" id="second_table">
+                         <thead>
+                             <th colspan="4"> Time sheet  </th>
+                         </thead>
+                         <tbody>
+                             <tr>
+                                 <th>#</th>
+                                 <th>Date</th>
+                                 <th>Description</th>
+                                 <th>Time</th>
+                             </tr>
+                             <t t-set="sequence" t-value="0"/>
+                             <t t-foreach="o.line_ids" t-as="line">
+                                 <t t-set="sequence" t-value="sequence + 1"/>
+
+                                 <tr>
+                                    <td t-esc="sequence"/>
+                                    <td t-esc="line.date"/>
+                                    <td t-esc="line.description"/>
+                                    <td t-esc="line.hours"/>
+                                 </tr>
+
+                             </t>
+                                <tr>
+                                     <th colspan="3"><strong>Total time</strong></th>
+                                     <td><t t-esc="o.total_hours"/>h</td>
+                                 </tr>
+
+                         </tbody>
+                     </table>
+                 </t>
+             </t>
+
+        </t>
+
+
+    </template>
+</odoo>

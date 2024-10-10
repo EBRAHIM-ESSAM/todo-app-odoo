@@ -1,0 +1,125 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="todo_app.list">
+      <field name="name">todo app list</field>
+      <field name="model">todo.task</field>
+      <field name="arch" type="xml">
+        <tree decoration-danger="is_late">
+          <field name="name"/>
+          <field name="is_late"/>
+          <field name="assign_id"/>
+          <field name="description"/>
+          <field name="estimated_time"/>
+          <field name="due_date"/>
+          <field name="state" widget="badge" decoration-warning="state=='inProgress'"
+                                              decoration-danger="state=='closed'"
+                                              decoration-success="state=='completed'"/>
+          <field name="active" invisible="True"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="todo_app.search">
+      <field name="name">todo app list</field>
+      <field name="model">todo.task</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name"/>
+          <field name="assign_id"/>
+          <filter name="sate_new" string="New" domain="[('state','=','new')]"/>
+          <filter name="sate_" string="In Progress" domain="[('state','=','inProgress')]"/>
+          <filter name="sate_new" string="Completed" domain="[('state','=','completed')]"/>
+
+
+          <filter name="status" string="Status" context="{'group_by': 'state'}"/>
+          <filter name="date" string="Due Date" context="{'group_by': 'due_date'}"/>
+
+
+        </search>
+
+      </field>
+    </record>
+    <record model="ir.ui.view" id="todo_app.form">
+      <field name="name">todo app list</field>
+      <field name="model">todo.task</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button name="action_progress" type="object" string="In Progress" invisible="state != 'new' "/>
+            <button name="action_completed" type="object" string="Completed" invisible="state != 'inProgress' "/>
+            <button name="action_new" type="object" string="set new" invisible="state == 'new' "/>
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+
+            <group>
+              <field name="name"/>
+              <field name="assign_id"/>
+              <field name="description"/>
+              <field name="due_date"/>
+              <field name="estimated_time"/>
+              <field name="active" invisible="True"/>
+              <field name="total_hours" invisible= "True"/>
+            </group>
+            <notebook>
+          <page string="task details ">
+            <field name="line_ids">
+              <tree editable="bottom">
+                <field name="date"/>
+                <field name="description"/>
+                <field name="hours"/>
+
+
+              </tree>
+            </field>
+          </page>
+        </notebook>
+
+
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids"/>
+            <field name="activity_ids"/>
+            <field name="message_ids"/>
+          </div>
+        </form>
+
+      </field>
+    </record>
+    <!-- closed server action -->
+    <record id="closed_server_action" model="ir.actions.server">
+      <field name="name">Closed</field>
+      <field name="model_id" ref="todo_app.model_todo_task"/>
+      <field name="binding_model_id" ref="todo_app.model_todo_task"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = records.action_closed()
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="todo_app.action_window">
+      <field name="name">todo_app</field>
+      <field name="res_model">todo.task</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+    <!-- Top menu item -->
+    <menuitem name="todo_app" id="todo_app.menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="To DO" id="todo_app.menu_1" parent="todo_app.menu_root"/>
+
+
+    <!-- actions -->
+
+    <menuitem name="Task List" id="todo_app.menu_1_list" parent="todo_app.menu_1"
+              action="todo_app.action_window"/>
+
+  </data>
+</odoo>
